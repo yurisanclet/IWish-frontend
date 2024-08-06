@@ -1,6 +1,13 @@
 "use client";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { z } from 'zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import LoginForm from "./components/LoginForm";
@@ -10,7 +17,6 @@ const formSchema = z.object({
   password: z.string(),
 });
 
-
 export default function Login() {
   return (
     <div className="flex justify-center items-center h-screen">
@@ -19,7 +25,9 @@ export default function Login() {
         <LoginForm />
         <div className="flex gap-1 text-sm">
           <p>{"Don't have an account?"}</p>
-          <a href="/register" className="">Register</a>
+          <a href="/register" className="">
+            Register
+          </a>
         </div>
       </div>
     </div>

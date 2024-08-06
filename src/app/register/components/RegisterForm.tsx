@@ -1,10 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormProvider, useForm } from "react-hook-form";
-import { Info } from "lucide-react"; 
-import { z } from 'zod';
+import { Info } from "lucide-react";
+import { z } from "zod";
 import Errors from "undici-types/errors";
 import ResponseStatusCodeError = Errors.ResponseStatusCodeError;
 
@@ -15,8 +21,7 @@ const formSchema = z.object({
   confirmPassword: z.string(),
 });
 
-export default function RegisterForm(){
-
+export default function RegisterForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -24,39 +29,38 @@ export default function RegisterForm(){
       email: "",
       password: "",
       confirmPassword: "",
-    }
+    },
   });
 
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-  async function onSubmit(data: z.infer<typeof formSchema>){
-      try {
-          const response = await fetch("/api/users", {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-          })
-          
-          if (!response.ok)
-          {
-              const errorData = await response.json()
-              new Error(errorData.data || "Failed to register")
-          }
-          
-          const result = response.json()
-          console.log(result)
+      if (!response.ok) {
+        const errorData = await response.json();
+        new Error(errorData.data || "Failed to register");
       }
-      catch(error)
-      {
-          console.error('Error registering user:', error);
-      }
+
+      const result = response.json();
+      console.log(result);
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
   }
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-4 p-4">
-        <FormField 
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col space-y-4 p-4"
+      >
+        <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
@@ -77,14 +81,14 @@ export default function RegisterForm(){
           name="email"
           render={({ field }) => (
             <FormItem>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Email"
-                    className="border-2 border-cyan-50 p-2"
-                  />
-                </FormControl>
-                <FormMessage />
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="Email"
+                  className="border-2 border-cyan-50 p-2"
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -123,5 +127,5 @@ export default function RegisterForm(){
         <Button type="submit">Cadastrar</Button>
       </form>
     </FormProvider>
-  )
+  );
 }
